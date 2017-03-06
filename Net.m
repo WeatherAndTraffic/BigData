@@ -1,0 +1,16 @@
+num=xlsread('flow12_23.xlsx','trafficFlow','A1:BI471');
+inputTrain=num(1:450,1:51)';
+outputTrain=num(1:450,52:61)';
+inputTest=num(451:471,1:51)';
+[inputn,inputs]=mapminmax(inputTrain);
+[outputn,outputs]=mapminmax(outputTrain);
+net=newff(inputn,outputn,100);
+net.trainParam.epochs=100;
+net.trainParam.lr=0.1;
+net.trainParam.mc=0.95;
+net.trainParam.goal=0.00001;
+net=train(net,inputn,outputn);
+inputnTest=mapminmax('apply',inputTest,inputs);
+an=sim(net,inputnTest);
+BPoutput=mapminmax('reverse',an,outputs);
+disp(BPoutput);
